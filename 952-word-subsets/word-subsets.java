@@ -12,14 +12,7 @@ class Solution {
         for(int i=0;i<words1.length;i++){
             String word = words1[i];
             int[] word1Hash = hashBuilder(word);
-            boolean isUniversal = true;
-            for(int j=0;j<26;j++){
-                if(word1Hash[j]<charHash[j]){
-                    isUniversal = false;
-                    break;
-                }
-            }
-            if(isUniversal) result.add(word);
+            if(subset(word1Hash,charHash)) result.add(word);
         }
         return result;
     }
@@ -29,5 +22,11 @@ class Solution {
             hash[str.charAt(i)-'a']++;
         }
         return hash;
+    }
+    private boolean subset(int[] source,int[] target){
+        for(int i=0;i<26;i++){
+            if(source[i]<target[i]) return false;
+        }
+        return true;
     }
 }
