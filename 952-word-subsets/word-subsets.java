@@ -4,24 +4,30 @@ class Solution {
         ArrayList<String> result = new ArrayList<>();
         for(int i=0;i<words2.length;i++){
             String word = words2[i];
-            int[] currHash = new int[26];
-            for(int j=0;j<word.length();j++){
-                int index = word.charAt(j)-'a';
-                currHash[index]++;
-                charHash[index] = Math.max(charHash[index],currHash[index]);
+            int[] currHash = hashBuilder(word);
+            for(int j=0;j<26;j++){
+                charHash[j] = Math.max(charHash[j],currHash[j]);
             }
         }
         for(int i=0;i<words1.length;i++){
             String word = words1[i];
-            int[] compareHash = charHash.clone();
-            for(int j=0;j<word.length();j++){
-                compareHash[word.charAt(j)-'a']--;
+            int[] word1Hash = hashBuilder(word);
+            boolean isUniversal = true;
+            for(int j=0;j<26;j++){
+                if(word1Hash[j]<charHash[j]){
+                    isUniversal = false;
+                    break;
+                }
             }
-            for(int k=0;k<26;k++){
-                if(compareHash[k]>0) break;
-                if(k==25) result.add(word);
-            }
+            if(isUniversal) result.add(word);
         }
         return result;
+    }
+    public int[] hashBuilder(String str){
+        int[] hash = new int[26];
+        for(int i=0;i<str.length();i++){
+            hash[str.charAt(i)-'a']++;
+        }
+        return hash;
     }
 }
