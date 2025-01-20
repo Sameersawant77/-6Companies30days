@@ -1,20 +1,23 @@
 class Solution {
     public int firstCompleteIndex(int[] arr, int[][] mat) {
         int m = mat.length, n = mat[0].length;
-        Map<Integer,int[]> valuesToPos = new HashMap<>();
+        int[] valueRow = new int[m*n+1];
+        int[] valueCol = new int[m*n+1];
         for(int i=0;i<m;i++){
             for(int j=0;j<n;j++){
-                valuesToPos.put(mat[i][j],new int[]{i,j});
+                valueRow[mat[i][j]] = i;
+                valueCol[mat[i][j]] = j;
             }
         }
         int[] rowCount = new int[m];
         int[] colCount = new int[n];
         for(int i=0;i<arr.length;i++){
-            int[] index = valuesToPos.get(arr[i]);
-            rowCount[index[0]]++;
-            colCount[index[1]]++;
+            int rowIndex = valueRow[arr[i]];
+            int colIndex = valueCol[arr[i]];
+            rowCount[rowIndex]++;
+            colCount[colIndex]++;
 
-            if(rowCount[index[0]]>=n || colCount[index[1]]>=m){
+            if(rowCount[rowIndex]>=n || colCount[colIndex]>=m){
                 return i;
             }
         }
