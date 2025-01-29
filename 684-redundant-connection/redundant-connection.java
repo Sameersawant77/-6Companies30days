@@ -1,30 +1,38 @@
 class Solution {
     public int[] findRedundantConnection(int[][] edges) {
-        ArrayList<Set<Integer>> adjList = new ArrayList<>();
-        int[] res = null;
-        for(int i=0;i<1001;i++){
-            adjList.add(new HashSet<>());
+        int n = edges.length;
+        int[] parent = new int[n+1];
+        int[] rank = new int[n+1];
+        for(int i = 1; i < n; i++) {
+            parent[i] = i;
         }
-        for(int[] edge:edges){
-            int u = edge[0];
-            int v = edge[1];
-            if(dfs(u,v,0,adjList)){
-                res = edge;
+        for(int[] edge: edges){
+            int u = edge[0], v = edge[1];
+            int p1 = findParent(u,parent);
+            int p2 = findParent(v,parent);
+            if(p1==p2){
+                return edge;
             }
-            else{
-                adjList.get(u).add(v);
-                adjList.get(v).add(u);
-            }
+            union(p1,p2,parent,rank);
         }
-        return res;
+        return new int[]{};
     }
-    private boolean dfs(int u,int v,int pre,List<Set<Integer>> adjList){
-        if(u==v) return true;
-        for(int w:adjList.get(u)){
-            if(w==pre) continue;
-            boolean ret = dfs(w,v,u,adjList);
-            if(ret) return true;
+    private int findParent(int x,int[] parent){
+        if(x!=parent[x]){
+            parent[x] = findParent(parent[x],parent);
         }
-        return false;
+        return parent[x];
+    }
+    private void union(int p1,int p2,int[] parent,int[] rank){
+        if(rank[p1]>rank[p2]){
+            parent[p2] = p1;
+        }
+        else if(rank[p2]>rank[p1]){
+            parent[p1] = p2;
+        }
+        else{
+            parent[p2] = p1;
+            rank[p1]++;
+        }
     }
 }
